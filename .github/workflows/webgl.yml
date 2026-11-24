@@ -1,0 +1,45 @@
+name: Build Rocket Cars for WebGL
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "Assets/**"
+      - "Packages/**"
+      - "ProjectSettings/**"
+      - ".github/workflows/webgl.yml"
+
+jobs:
+  build-webgl:
+    name: Build Unity WebGL
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-WebGL-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-WebGL-
+
+      - name: Build WebGL player
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          unityVersion: 2022.3.58f1
+          targetPlatform: WebGL
+          buildsPath: build
+
+      - name: Upload playable WebGL files
+        uses: actions/upload-artifact@v4
+        with:
+          name: Rocket-Cars-WebGL
+          path: build/WebGL
+          if-no-files-found: error
+          retention-days: 14
