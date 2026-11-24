@@ -21,6 +21,7 @@ public sealed class NetickWebGLInput : MonoBehaviour
 #endif
         }
     }
+
     public static bool IsMobileBrowser {
         get {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -30,12 +31,15 @@ public sealed class NetickWebGLInput : MonoBehaviour
 #endif
         }
     }
+
     public static bool CanPlay => !IsMobileBrowser || HasGamepad;
     public static float Steer => Axis(0);
     public static float Throttle => -Axis(1);
     public static float AirRoll => Axis(2);
     public static bool Jump => Button(0);
+    public static bool Drift => Button(1);
     public static bool Rocket => Button(7) || Button(5);
+
     public static bool KonamiCodeEntered {
         get {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -53,6 +57,7 @@ public sealed class NetickWebGLInput : MonoBehaviour
         return 0f;
 #endif
     }
+
     private static bool Button(int button) {
 #if UNITY_WEBGL && !UNITY_EDITOR
         return NRC_GetGamepadButton(button) != 0;
